@@ -1,6 +1,6 @@
 module move_mouse_go
 
-go 1.22.3
+go 1.22
 
 require github.com/go-vgo/robotgo v0.110.1
 
