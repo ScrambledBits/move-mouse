@@ -6,13 +6,20 @@ on:
       - "v*"
 
 jobs:
-  xgo:
+  cross-compile:
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install dependencies
-        run: sudo apt-get install -y libxtst-dev
+        run: |
+          sudo apt install -y libxcursor-dev
+          sudo apt install -y libxinerama-dev
+          sudo apt install -y libxi-dev
+          sudo apt install -y libx11-dev
+          sudo apt install -y libglu1-mesa-dev
+          sudo apt install -y libxrandr-dev
       - name: Build
         uses: crazy-max/ghaction-xgo@v3.0.0
         with:
@@ -28,16 +35,16 @@ jobs:
           buildmode: default
           trimpath: true
           buildvcs: true
-      #   - name: Upload artifacts
-      #     uses: echapmanFromBunnings/upload-artifact@3.0.0
-      #     with:
-      #       name: "releases"
-      #       path: "dist/**/*"
-      #       if-no-files-found: "warn" # Optional
-      #       retention-days: 10 # Optional
+      - name: Upload artifacts
+        uses: echapmanFromBunnings/upload-artifact@3.0.0
+        with:
+          name: "releases"
+          path: "dist/"
+          if-no-files-found: "warn" # Optional
+          retention-days: 10 # Optional
       - name: Create release
         uses: ncipollo/release-action@v1.14.0
         with:
-          artifacts: "dist/**/*"
+          artifacts: "dist/"
           body: "Yet another release"
           makeLatest: true
