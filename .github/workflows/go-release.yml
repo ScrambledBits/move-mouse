@@ -28,7 +28,8 @@ jobs:
           buildmode: default
           trimpath: true
           buildvcs: true
-      - uses: echapmanFromBunnings/upload-artifact@3.0
+      - name: Upload artifacts
+        uses: echapmanFromBunnings/upload-artifact@3.0.0
         with:
           name: "releases"
           path: "dist/**/*"
