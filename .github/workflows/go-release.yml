@@ -2,7 +2,8 @@ name: build
 
 on:
   push:
-  pull_request:
+    tags:
+      - "v*"
 
 jobs:
   xgo:
@@ -17,7 +18,7 @@ jobs:
         with:
           xgo_version: latest
           go_version: 1.22
-          dest: build
+          dest: dist
           prefix: mv_cursor
           targets: windows/amd64,linux/amd64,linux/arm64,darwin/arm64
           v: true
@@ -27,3 +28,14 @@ jobs:
           buildmode: default
           trimpath: true
           buildvcs: true
+      - uses: echapmanFromBunnings/upload-artifact@3.0
+        with:
+          name: "releases"
+          path: "dist/**/*"
+          if-no-files-found: "warn" # Optional
+          retention-days: 10 # Optional
+      - uses: ncipollo/release-action@v1.14.0
+        with:
+          artifacts: "dist/**/*"
+          body: "Yet another release"
+          makeLatest: true
