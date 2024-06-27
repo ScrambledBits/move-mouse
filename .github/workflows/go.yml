@@ -18,10 +18,10 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.20"
+          go-version: "1.22"
 
       - name: Install dependencies
-        run: sudo apt-get install libxtst-dev
+        run: sudo apt-get install -y libxtst-dev
 
       - name: Build
         run: go build -v ./...
