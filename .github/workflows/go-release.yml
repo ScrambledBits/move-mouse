@@ -12,14 +12,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.22
       - name: Install dependencies
         run: |
-          sudo apt install -y libxcursor-dev
-          sudo apt install -y libxinerama-dev
-          sudo apt install -y libxi-dev
-          sudo apt install -y libx11-dev
-          sudo apt install -y libglu1-mesa-dev
-          sudo apt install -y libxrandr-dev
+          sudo apt update
+          sudo apt install -y libxcursor-dev libxinerama-dev libxi-dev libx11-dev libglu1-mesa-dev libxrandr-dev
       - name: Build
         uses: crazy-max/ghaction-xgo@v3.0.0
         with:
@@ -36,15 +36,18 @@ jobs:
           trimpath: true
           buildvcs: true
       - name: Upload artifacts
-        uses: echapmanFromBunnings/upload-artifact@3.0.0
+        uses: actions/upload-artifact@v3
         with:
-          name: "releases"
+          name: "mv_cursor-${{ github.ref_name }}"
           path: "dist/"
           if-no-files-found: "warn" # Optional
           retention-days: 10 # Optional
       - name: Create release
+        id: create_release
         uses: ncipollo/release-action@v1.14.0
         with:
+          tag: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: "Release of version ${{ github.ref_name }}"
           artifacts: "dist/"
-          body: "Yet another release"
           makeLatest: true
