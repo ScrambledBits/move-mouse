@@ -3,9 +3,6 @@
 # Set the output directory for the compiled binaries
 OUTPUT_DIR="./build"
 
-# Create the output directory if it doesn't exist
-mkdir -p "$OUTPUT_DIR"
-
 # Array of OS-ARCH combinations to build for
 platforms=(
   "darwin:arm64"   # macOS for ARM (Apple Silicon/M1/M3)
@@ -23,24 +20,20 @@ do
   # Set the output filename
   OUTPUT_NAME="$OUTPUT_DIR/${GOOS}_${GOARCH}/move-cursor"
   
-  # For Windows, append ".exe" to the output file name
+  # For Windows, append ".exe" to the output name
   if [ "$GOOS" = "windows" ]; then
-    OUTPUT_NAME="$OUTPUT_NAME.exe"
+    OUTPUT_NAME="${OUTPUT_NAME}.exe"
   fi
 
-  # Create a platform-specific directory
+  # Create the output directory for the current platform
   mkdir -p "$(dirname "$OUTPUT_NAME")"
 
-  # Check if we are building for macOS amd64 (x86_64)
-  if [ "$GOOS" = "darwin" ] && [ "$GOARCH" = "amd64" ]; then
-    echo "Building for $GOOS/$GOARCH using Rosetta..."
-    # Use Rosetta to build for amd64
-    arch -x86_64 go build -o "$OUTPUT_NAME" .
-  else
-    echo "Building for $GOOS/$GOARCH..."
-    # Normal build process
-    env GOOS="$GOOS" GOARCH="$GOARCH" go build -o "$OUTPUT_NAME" .
-  fi
+  # Set the GOOS and GOARCH variables for the current platform
+  export GOOS="$GOOS"
+  export GOARCH="$GOARCH"
+
+  # Build the binary for the current platform
+  go build -o "$OUTPUT_NAME" .
 
   # Check if the build was successful
   if [ $? -ne 0 ]; then
@@ -51,4 +44,4 @@ do
   echo "Build successful: $OUTPUT_NAME"
 done
 
-echo "All builds completed successfully!"
+echo "All builds completed successfully!"```
